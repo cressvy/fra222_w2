@@ -98,6 +98,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  //read pc13 and save name as b1
+	  GPIO_PinState B1 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+
+	  //Write B1 to GPIO PA5 (LD2)
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, B1);
+
+
   }
   /* USER CODE END 3 */
 }
