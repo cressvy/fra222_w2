@@ -42,6 +42,14 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+//veriant to save switch state
+	typedef struct{
+GPIO_PinState current;
+GPIO_PinState last;
+	}GpioStateSave;
+
+GpioStateSave B1 = {1,1};
+
 
 /* USER CODE END PV */
 
@@ -65,6 +73,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
 
   /* USER CODE END 1 */
 
@@ -98,13 +107,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //read pc13 and save name as b1
-	  GPIO_PinState B1 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+//	  //read pc13 and save name as b1
+//	  GPIO_PinState B1 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+//
+//	  //Write B1 to GPIO PA5 (LD2)
+//	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, B1);
+	  B1.current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
 
-	  //Write B1 to GPIO PA5 (LD2)
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, B1);
-
-
+	  if (B1.last == 1 && B1.current == 0){
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	  }
+	  B1.last = B1.current;
   }
   /* USER CODE END 3 */
 }
@@ -140,7 +153,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB buses clocks
+  /** Initializes the CPU, AHB and APB buses clocks;
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
