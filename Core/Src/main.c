@@ -43,12 +43,12 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 //veriant to save switch state
-	typedef struct{
-GPIO_PinState current;
-GPIO_PinState last;
-	}GpioStateSave;
-
-GpioStateSave B1 = {1,1};
+//	typedef struct{
+//GPIO_PinState current;
+//GPIO_PinState last;
+//	}GpioStateSave;
+//
+//GpioStateSave B1 = {1,1};
 
 
 /* USER CODE END PV */
@@ -112,13 +112,25 @@ int main(void)
 //
 //	  //Write B1 to GPIO PA5 (LD2)
 //	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, B1);
-	  B1.current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+//	  B1.current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+//
+//	  if (B1.last == 1 && B1.current == 0){
+//		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+//	  }
+//	  B1.last = B1.current;
+	  //blink for 1 hz 500 ms-500 ms
+	  //create timestamp
+	  static uint32_t timestamp = 0;
+	  //check current time if its > stime tamp
+	  if(timestamp <= HAL_GetTick()){
+		  //set next time to turn led on
+		 timestamp = HAL_GetTick() + 500 ; //ms
+		 // led on
+		 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
-	  if (B1.last == 1 && B1.current == 0){
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 	  }
-	  B1.last = B1.current;
   }
+
   /* USER CODE END 3 */
 }
 
