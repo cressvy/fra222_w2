@@ -112,40 +112,38 @@ int main(void)
 //
 	  //Write B1 to GPIO PA5 (LD2)
 	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, B1);
-	  B1.current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
-	  uint32_t clk = 500;
+	  B1.current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
+	  static uint8_t clk = 0;
 	  static uint32_t timestamp = 0;
-//
+
 	  if (B1.last == 1 && B1.current == 0){
-		  if(clk == 500){ clk = 1000 ;
-		  }
-		  else{ clk = 500;
-		  }
-	  }
-//	  if(timestamp <= HAL_GetTick()&& clk%2 == 1){
-//	  		 		  //set next time to turn led on
-//	  		 		 timestamp = HAL_GetTick() + 500 ; //ms
-//	  		 		 // led on
-//	  		 		 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-//	  		 	  }
-//	  if(timestamp <= HAL_GetTick()&& clk%2 == 0){
-//	  	 		  //set next time to turn led on
-//	  	 		 timestamp = HAL_GetTick() + 250 ; //ms
-//	  	 		 // led on
-//	  	 		 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-	  	 	  }
+		  clk = clk + 1;
+	 	  }
+		  if(timestamp <= HAL_GetTick()&& clk%2 == 0){
+		  	 		  //set next time to turn led on
+		  	 		 timestamp = HAL_GetTick() + 250 ; //ms
+		  	 		 // led on
+		  	 		 HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_12);}
+		  if(timestamp <= HAL_GetTick()&& clk%2 == 1){
+		  		 		  //set next time to turn led on
+		  		 		 timestamp = HAL_GetTick() + 500 ; //ms
+		  		 		 // led on
+		  		 		 HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_12);
+		  		 	  }
 	  B1.last = B1.current;
 	  //blink for 1 hz 500 ms-500 ms
 	  //create timestamp
-	  //static uint32_t timestamp = 0;
+//	  static uint32_t timestamp = 0;
 	  //check current time if its > stime tamp
-	  if(timestamp <= HAL_GetTick()){
-		  //set next time to turn led on
-		  timestamp = HAL_GetTick() + clk ; //ms
-		 // led on
-		 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+//	  if(timestamp <= HAL_GetTick()){
+//		  //set next time to turn led on
+//		 timestamp = HAL_GetTick() + 500 ; //ms
+//		 // led on
+//		 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+//
+//	  }
+	  //out side switch cinnection
 
-	  }
   }
 
   /* USER CODE END 3 */
@@ -182,7 +180,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB buses clocks;
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -248,6 +246,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
@@ -260,6 +261,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 }
 
